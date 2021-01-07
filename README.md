@@ -3,6 +3,7 @@ just an extension for go:embed
 
 #### Usage
 ```bash
+%> cd demo # change to your golang project root directory; cd <your-project-dir>
 %> go get github.com/alimy/embedx
 %> tree
  |- public
