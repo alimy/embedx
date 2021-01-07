@@ -29,8 +29,8 @@ func (f argFunc) apply(arg *args) {
 	f(arg)
 }
 
-// AttachRootOpt setup attached to root directory name
-func AttachRootOpt(rootDir string) option {
+// AttachRoot setup attached to root directory name.
+func AttachRoot(rootDir string) option {
 	rootDir = strings.Trim(rootDir, `\ /`)
 	return argFunc(func(a *args) {
 		a.category |= categoryAttachFS
@@ -38,8 +38,8 @@ func AttachRootOpt(rootDir string) option {
 	})
 }
 
-// ChangeRootOpt setup changed to root directory name
-func ChangeRootOpt(rootDir string) option {
+// ChangeRoot setup changed to root directory name.
+func ChangeRoot(rootDir string) option {
 	rootDir = strings.Trim(rootDir, `\ /`)
 	return argFunc(func(a *args) {
 		a.category |= categoryRootFS

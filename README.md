@@ -7,6 +7,9 @@ just an extension for go:embed
 %> go get github.com/alimy/embedx
 %> tree
  |- public
+    |- ...
+    |- index.html
+    |- ...
  |- conf
     |- app.ini
     |- ...
@@ -29,13 +32,13 @@ import (
 	"github.com/alimy/embedx"
 )
 
-
-
 func NewConfigFS() http.FileSystem {
 	//go:embed app.ini
 	var content embed.FS
-	
-	return embedx.NewFileSystem(&content, embedx.AttachRootOpt("conf"))
+
+	// attach a root to conf dir then access files in this returned FS will
+	// need add  'conf' prefix. eg: access app.ini need FS.ReadFile("conf/app.ini").
+	return embedx.NewFileSystem(&content, embedx.AttachRoot("conf"))
 }
 ```
 ```go
@@ -50,13 +53,12 @@ import (
 	"github.com/alimy/embedx"
 )
 
-
-
 func newPublicFS() http.FileSystem {
 	//go:embed public
 	var content embed.FS
 	
-	return embedx.NewFileSystem(&content, embedx.ChangeRootOpt("public"))
+	// change the root to public dir then access files in this returned FS will
+	// not need  'public' prefix. eg: access public/index.html just need FS.ReadFile("index.html").
+	return embedx.NewFileSystem(&content, embedx.ChangeRoot("public"))
 }
 ```
-
