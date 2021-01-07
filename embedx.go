@@ -11,10 +11,10 @@ import (
 )
 
 const (
-	categoryNone     = 0
-	categoryAttachFS = 1
-	categoryRootFS   = 2
-	categoryBundleFS = categoryAttachFS | categoryRootFS
+	categoryNone     int8 = 0
+	categoryAttachFS int8 = 1
+	categoryRootFS   int8 = 2
+	categoryBundleFS      = categoryAttachFS | categoryRootFS
 )
 
 // EmbedFS embed.FS public method re-defined as  interface
