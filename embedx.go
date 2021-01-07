@@ -2,7 +2,7 @@ package embedx
 
 import (
 	"embed"
-	"net/http"
+	"io/fs"
 	"strings"
 )
 
@@ -12,6 +12,13 @@ const (
 	categoryRootFS   = 2
 	categoryBundleFS = categoryAttachFS | categoryRootFS
 )
+
+// EmbedFS embed.FS public method re-defined as  interface
+type EmbedFS interface {
+	fs.FS
+	ReadDir(name string) ([]fs.DirEntry, error)
+	ReadFile(name string) ([]byte, error)
+}
 
 type args struct {
 	category  int8
@@ -47,8 +54,8 @@ func ChangeRoot(rootDir string) option {
 	})
 }
 
-// NewFileSystem make a http.FileSystem instance that contain embed.FS resource.
-func NewFileSystem(content *embed.FS, opts ...option) http.FileSystem {
+// NewFileSystem make an EmbedFS instance that contain embed.FS resource.
+func NewFileSystem(content *embed.FS, opts ...option) EmbedFS {
 	a := &args{category: categoryNone}
 	for _, opt := range opts {
 		opt.apply(a)
@@ -61,6 +68,6 @@ func NewFileSystem(content *embed.FS, opts ...option) http.FileSystem {
 	case a.category == categoryBundleFS && a.rootDir != "" && a.attachDir != "":
 		return newBundleEmbedFS(content, a.rootDir, a.attachDir)
 	default:
-		return http.FS(content)
+		return content
 	}
 }

@@ -3,7 +3,6 @@ package embedx
 import (
 	"embed"
 	"io/fs"
-	"net/http"
 	"strings"
 )
 
@@ -37,11 +36,11 @@ func (f *bundleEmbedFS) path(name string) string {
 	return strings.Join([]string{f.root, name}, "/")
 }
 
-func newBundleEmbedFS(content *embed.FS, rootDir string, attachDir string) http.FileSystem {
-	return http.FS(&bundleEmbedFS{
+func newBundleEmbedFS(content *embed.FS, rootDir string, attachDir string) EmbedFS {
+	return &bundleEmbedFS{
 		FS:             content,
 		root:           rootDir,
 		attachDir:      attachDir,
 		attachDirSlash: attachDir + "/",
-	})
+	}
 }

@@ -27,12 +27,11 @@ package assets
 
 import (
 	"embed"
-	"net/http"
 	
 	"github.com/alimy/embedx"
 )
 
-func NewConfigFS() http.FileSystem {
+func NewConfigFS() embedx.EmbedFS {
 	//go:embed app.ini
 	var content embed.FS
 
@@ -48,12 +47,11 @@ package assets
 
 import (
 	"embed"
-	"net/http"
 	
 	"github.com/alimy/embedx"
 )
 
-func newPublicFS() http.FileSystem {
+func newPublicFS() embedx.EmbedFS {
 	//go:embed public
 	var content embed.FS
 	

@@ -3,7 +3,6 @@ package embedx
 import (
 	"embed"
 	"io/fs"
-	"net/http"
 	"strings"
 )
 
@@ -35,10 +34,10 @@ func (f *attachEmbedFS) path(name string) string {
 	return strings.TrimPrefix(name, f.attachDirSlash)
 }
 
-func newAttachEmbedFS(content *embed.FS, attachDir string) http.FileSystem {
-	return http.FS(&attachEmbedFS{
+func newAttachEmbedFS(content *embed.FS, attachDir string) EmbedFS {
+	return &attachEmbedFS{
 		FS:             content,
 		attachDir:      attachDir,
 		attachDirSlash: attachDir + "/",
-	})
+	}
 }

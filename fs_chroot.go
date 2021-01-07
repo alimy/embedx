@@ -3,7 +3,6 @@ package embedx
 import (
 	"embed"
 	"io/fs"
-	"net/http"
 	"strings"
 )
 
@@ -34,9 +33,9 @@ func (f *rootEmbedFS) path(name string) string {
 	return strings.Join([]string{f.root, name}, "/")
 }
 
-func newRootEmbedFS(content *embed.FS, root string) http.FileSystem {
-	return http.FS(&rootEmbedFS{
+func newRootEmbedFS(content *embed.FS, root string) EmbedFS {
+	return &rootEmbedFS{
 		FS:   content,
 		root: root,
-	})
+	}
 }
