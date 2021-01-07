@@ -64,7 +64,7 @@ func NewFileSystem(content *embed.FS, opts ...option) EmbedFS {
 	case a.category == categoryRootFS && a.rootDir != "":
 		return newRootEmbedFS(content, a.rootDir)
 	case a.category == categoryAttachFS && a.attachDir != "":
-		return newAttachEmbedFS(content, a.rootDir)
+		return newAttachEmbedFS(content, a.attachDir)
 	case a.category == categoryBundleFS && a.rootDir != "" && a.attachDir != "":
 		return newBundleEmbedFS(content, a.rootDir, a.attachDir)
 	default:
