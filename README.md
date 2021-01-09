@@ -21,9 +21,9 @@ just an extension for go:embed
 ```
 
 ```go
-// file: conf/assets.go
+// file: conf/conf.go
 
-package assets
+package conf
 
 import (
 	"embed"
@@ -43,7 +43,7 @@ func NewConfigFS() embedx.EmbedFS {
 ```go
 // file: main.go
 
-package assets
+package main
 
 import (
 	"embed"
