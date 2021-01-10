@@ -5,16 +5,8 @@
 package embedx
 
 import (
-	"embed"
 	"io/fs"
 	"strings"
-)
-
-const (
-	categoryNone     int8 = 0
-	categoryAttachFS int8 = 1
-	categoryRootFS   int8 = 2
-	categoryBundleFS      = categoryAttachFS | categoryRootFS
 )
 
 // EmbedFS embed.FS public method re-defined as  interface
@@ -24,54 +16,29 @@ type EmbedFS interface {
 	ReadFile(name string) ([]byte, error)
 }
 
-type args struct {
-	category  int8
-	attachDir string
-	rootDir   string
-}
-
-type option interface {
-	apply(*args)
-}
-
-type argFunc func(*args)
-
-func (f argFunc) apply(arg *args) {
-	f(arg)
-}
-
-// AttachRoot setup attached to root directory name.
-func AttachRoot(rootDir string) option {
-	rootDir = strings.Trim(rootDir, `\ /`)
-	return argFunc(func(a *args) {
-		a.category |= categoryAttachFS
-		a.attachDir = rootDir
-	})
-}
-
-// ChangeRoot setup changed to root directory name.
-func ChangeRoot(rootDir string) option {
-	rootDir = strings.Trim(rootDir, `\ /`)
-	return argFunc(func(a *args) {
-		a.category |= categoryRootFS
-		a.rootDir = rootDir
-	})
-}
-
-// NewFileSystem make an EmbedFS instance that contain embed.FS resource.
-func NewFileSystem(content *embed.FS, opts ...option) EmbedFS {
-	a := &args{category: categoryNone}
-	for _, opt := range opts {
-		opt.apply(a)
+// AttachRoot attach to a virtual root directory like mount to a new directory.
+func AttachRoot(fs EmbedFS, root string) EmbedFS {
+	if name, isDotDir := amendPath(root); isDotDir {
+		return fs
+	} else {
+		return newAttachEmbedFS(fs, name)
 	}
-	switch {
-	case a.category == categoryRootFS && a.rootDir != "":
-		return newRootEmbedFS(content, a.rootDir)
-	case a.category == categoryAttachFS && a.attachDir != "":
-		return newAttachEmbedFS(content, a.attachDir)
-	case a.category == categoryBundleFS && a.rootDir != "" && a.attachDir != "":
-		return newBundleEmbedFS(content, a.rootDir, a.attachDir)
-	default:
-		return content
+
+}
+
+// ChangeRoot change to a new directory like cd cmd in shell but not check whether
+// this directory is exist.
+func ChangeRoot(fs EmbedFS, root string) EmbedFS {
+	if name, isDotDir := amendPath(root); isDotDir {
+		return fs
+	} else {
+		return newRootEmbedFS(fs, name)
 	}
+}
+
+// note: will not process path like ".."
+func amendPath(name string) (string, bool) {
+	name = strings.Trim(strings.ReplaceAll(name, `\`, "/"), " /")
+	isDotDir := name == "" || name == "."
+	return name, isDotDir
 }

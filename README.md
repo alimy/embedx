@@ -21,7 +21,7 @@ just an extension for go:embed
 ```
 
 ```go
-// file: conf/assets.go
+// file: conf/conf.go
 
 package assets
 
@@ -37,13 +37,13 @@ func NewConfigFS() embedx.EmbedFS {
 
 	// attach a root to conf dir then access files in this returned FS will
 	// need add  'conf' prefix. eg: access app.ini need FS.ReadFile("conf/app.ini").
-	return embedx.NewFileSystem(&content, embedx.AttachRoot("conf"))
+	return embedx.AttachRoot(&content, "conf")
 }
 ```
 ```go
 // file: main.go
 
-package assets
+package main
 
 import (
 	"embed"
@@ -57,6 +57,6 @@ func newPublicFS() embedx.EmbedFS {
 	
 	// change the root to public dir then access files in this returned FS will
 	// not need  'public' prefix. eg: access public/index.html just need FS.ReadFile("index.html").
-	return embedx.NewFileSystem(&content, embedx.ChangeRoot("public"))
+	return embedx.ChangeRoot(&content, "public")
 }
 ```

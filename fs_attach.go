@@ -5,43 +5,42 @@
 package embedx
 
 import (
-	"embed"
 	"io/fs"
 	"strings"
 )
 
 type attachEmbedFS struct {
-	*embed.FS
-	attachDir      string
-	attachDirSlash string
+	EmbedFS
+	root      string
+	rootSlash string
 }
 
 // Open opens the named file for reading and returns it as an fs.File.
 func (f *attachEmbedFS) Open(name string) (fs.File, error) {
-	return f.FS.Open(f.path(name))
+	return f.EmbedFS.Open(f.path(name))
 }
 
 // ReadDir reads and returns the entire named directory.
 func (f *attachEmbedFS) ReadDir(name string) ([]fs.DirEntry, error) {
-	return f.FS.ReadDir(f.path(name))
+	return f.EmbedFS.ReadDir(f.path(name))
 }
 
 // ReadFile reads and returns the content of the named file.
 func (f *attachEmbedFS) ReadFile(name string) ([]byte, error) {
-	return f.FS.ReadFile(f.path(name))
+	return f.EmbedFS.ReadFile(f.path(name))
 }
 
 func (f *attachEmbedFS) path(name string) string {
-	if name == f.attachDir {
+	if name == f.root {
 		return "."
 	}
-	return strings.TrimPrefix(name, f.attachDirSlash)
+	return strings.TrimPrefix(name, f.rootSlash)
 }
 
-func newAttachEmbedFS(content *embed.FS, attachDir string) EmbedFS {
+func newAttachEmbedFS(fs EmbedFS, root string) EmbedFS {
 	return &attachEmbedFS{
-		FS:             content,
-		attachDir:      attachDir,
-		attachDirSlash: attachDir + "/",
+		EmbedFS:   fs,
+		root:      root,
+		rootSlash: root + "/",
 	}
 }
