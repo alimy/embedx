@@ -23,7 +23,7 @@ just an extension for go:embed
 ```go
 // file: conf/conf.go
 
-package assets
+package conf
 
 import (
 	"embed"
