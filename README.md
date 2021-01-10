@@ -1,5 +1,9 @@
 ## embedx
-just an extension for go:embed
+[![Build Status](https://api.travis-ci.com/alimy/embedx.svg?branch=master)](https://travis-ci.com/alimy/mir)
+[![GoDoc](https://godoc.org/github.com/alimy/embedx?status.svg)](https://pkg.go.dev/github.com/alimy/embedx)
+[![sourcegraph](https://img.shields.io/badge/view%20on-Sourcegraph-brightgreen.svg?logo=sourcegraph)](https://sourcegraph.com/github.com/alimy/embedx)
+
+Just an extension for go:embed
 
 #### Usage
 ```bash
