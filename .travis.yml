@@ -9,4 +9,4 @@ matrix:
   fast_finish: true
 
 script:
-  - go test .
+  - make test
