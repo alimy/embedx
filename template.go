@@ -16,10 +16,12 @@ import (
 // The returned template will have the (base) name and (parsed) contents of the
 // first file matched by the pattern.
 func ParseFS(fsys fs.FS, patterns ...string) (*template.Template, error) {
-	var (
-		t         *template.Template
-		filenames []string
-	)
+	return ParseWith(nil, fsys, patterns...)
+}
+
+// ParseWith like ParseFS but need provide a *template.Template instance as parameter.
+func ParseWith(t *template.Template, fsys fs.FS, patterns ...string) (*template.Template, error) {
+	var filenames []string
 
 	for _, pattern := range patterns {
 		list, err := fs.Glob(fsys, pattern)

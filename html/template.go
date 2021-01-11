@@ -10,16 +10,18 @@ import (
 	"io/fs"
 )
 
-// ParseFS creates a new html/Template and parses the template definitions from
+// ParseFS creates a new text/Template and parses the template definitions from
 // the files identified by the pattern. The files are matched according to the
 // semantics of filepath.Match, and the pattern must match at least one file.
 // The returned template will have the (base) name and (parsed) contents of the
 // first file matched by the pattern.
 func ParseFS(fsys fs.FS, patterns ...string) (*template.Template, error) {
-	var (
-		t         *template.Template
-		filenames []string
-	)
+	return ParseWith(nil, fsys, patterns...)
+}
+
+// ParseWith like ParseFS but need provide a *template.Template instance as parameter.
+func ParseWith(t *template.Template, fsys fs.FS, patterns ...string) (*template.Template, error) {
+	var filenames []string
 
 	for _, pattern := range patterns {
 		list, err := fs.Glob(fsys, pattern)
