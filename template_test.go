@@ -7,16 +7,18 @@ package embedx
 import (
 	"bytes"
 	"embed"
+	"fmt"
+	"log"
 	"strings"
 	"testing"
 	"text/template"
 )
 
 func TestParseFS(t *testing.T) {
-	//go:embed testdata
+	//go:embed html/testdata
 	var content embed.FS
 
-	embedFS := ChangeRoot(content, "testdata")
+	embedFS := ChangeRoot(content, "html/testdata")
 	tmpl, err := ParseFS(embedFS, "templates/*.tmpl", "templates/b/*.tmpl")
 	if err != nil {
 		t.Errorf("parse embed fs to template error: %s", err)
@@ -44,10 +46,10 @@ func TestParseFS(t *testing.T) {
 }
 
 func TestParseWith(t *testing.T) {
-	//go:embed testdata
+	//go:embed html/testdata
 	var content embed.FS
 
-	embedFS := ChangeRoot(content, "testdata")
+	embedFS := ChangeRoot(content, "html/testdata")
 	funcTmpl := template.New("embedx").Funcs(template.FuncMap{
 		"notEmptyStr": notEmptyStr,
 	})
@@ -76,6 +78,35 @@ func TestParseWith(t *testing.T) {
 		if lh != rh {
 			t.Errorf("result of rendered is not correct: %s", bs.String())
 		}
+	}
+}
+
+func ExampleParseWith() {
+	//go:embed html/testdata
+	var content embed.FS
+
+	embedFS := ChangeRoot(content, "html/testdata")
+	funcTmpl := template.New("embedx").Funcs(template.FuncMap{
+		"notEmptyStr": notEmptyStr,
+	})
+	tmpl, err := ParseWith(funcTmpl, embedFS, "templates/*.tmpl", "templates/b/*.tmpl", "templates/d/*.tmpl")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, ctx := range []struct {
+		Name string
+	}{
+		{"templates/a.tmpl"},
+		{"templates/b/c.tmpl"},
+		{"templates/d/e.tmpl"},
+		{"templates/d/f.tmpl"},
+	} {
+		bs := &bytes.Buffer{}
+		if err = tmpl.ExecuteTemplate(bs, ctx.Name, ctx); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(bs)
 	}
 }
 
