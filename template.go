@@ -47,12 +47,10 @@ func ParseWith(t *template.Template, fsys fs.FS, patterns ...string) (*template.
 		s := string(b)
 		// First template becomes return value if not already defined,
 		// and we use that one for subsequent New calls to associate
-		// all the templates together. Also, if this file has the same name
-		// as t, this file becomes the contents of t, so
-		//  t, err := New(name).Funcs(xxx).ParseFiles(name)
-		// works. Otherwise we create a new template associated with t.
+		// all the templates together.
+		tmplName := namer.Naming(name)
 		if t == nil {
-			t, err = template.New(name).Parse(s)
+			t, err = template.New(tmplName).Parse(s)
 			if err != nil {
 				return nil, err
 			}
@@ -63,7 +61,7 @@ func ParseWith(t *template.Template, fsys fs.FS, patterns ...string) (*template.
 			return nil, err
 		}
 		if _, err = tmpl.Parse(s); err == nil {
-			_, err = t.AddParseTree(name, tmpl.Tree)
+			_, err = t.AddParseTree(tmplName, tmpl.Tree)
 		}
 		if err != nil {
 			return nil, err

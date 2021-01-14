@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"html/template"
 	"io/fs"
+
+	"github.com/alimy/embedx"
 )
 
 // ParseFS creates a new text/Template and parses the template definitions from
@@ -51,14 +53,15 @@ func ParseWith(t *template.Template, fsys fs.FS, patterns ...string) (*template.
 		// as t, this file becomes the contents of t, so
 		//  t, err := New(name).Funcs(xxx).ParseFiles(name)
 		// works. Otherwise we create a new template associated with t.
+		tmplName := embedx.Naming(name)
 		var tmpl *template.Template
 		if t == nil {
-			t = template.New(name)
+			t = template.New(tmplName)
 		}
-		if name == t.Name() {
+		if tmplName == t.Name() {
 			tmpl = t
 		} else {
-			tmpl = t.New(name)
+			tmpl = t.New(tmplName)
 		}
 		_, err = tmpl.Parse(s)
 		if err != nil {
