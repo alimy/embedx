@@ -14,10 +14,10 @@ import (
 	"text/template"
 )
 
-func TestParseFS(t *testing.T) {
-	//go:embed html/testdata
-	var content embed.FS
+//go:embed html/testdata
+var content embed.FS
 
+func TestParseFS(t *testing.T) {
 	embedFS := ChangeRoot(content, "html/testdata")
 	tmpl, err := ParseFS(embedFS, "templates/*.tmpl", "templates/b/*.tmpl")
 	if err != nil {
@@ -46,9 +46,6 @@ func TestParseFS(t *testing.T) {
 }
 
 func TestParseWith(t *testing.T) {
-	//go:embed html/testdata
-	var content embed.FS
-
 	embedFS := ChangeRoot(content, "html/testdata")
 	funcTmpl := template.New("embedx").Funcs(template.FuncMap{
 		"notEmptyStr": notEmptyStr,
@@ -82,9 +79,6 @@ func TestParseWith(t *testing.T) {
 }
 
 func ExampleParseWith() {
-	//go:embed html/testdata
-	var content embed.FS
-
 	embedFS := ChangeRoot(content, "html/testdata")
 	funcTmpl := template.New("embedx").Funcs(template.FuncMap{
 		"notEmptyStr": notEmptyStr,

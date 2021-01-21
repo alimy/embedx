@@ -14,10 +14,10 @@ import (
 	"github.com/alimy/embedx"
 )
 
-func TestParseFS(t *testing.T) {
-	//go:embed testdata
-	var content embed.FS
+//go:embed testdata
+var content embed.FS
 
+func TestParseFS(t *testing.T) {
 	embedFS := embedx.ChangeRoot(content, "testdata")
 	tmpl, err := ParseFS(embedFS, "templates/*.tmpl", "templates/b/*.tmpl")
 	if err != nil {
@@ -46,9 +46,6 @@ func TestParseFS(t *testing.T) {
 }
 
 func TestParseWith(t *testing.T) {
-	//go:embed testdata
-	var content embed.FS
-
 	embedFS := embedx.ChangeRoot(content, "testdata")
 	funcTmpl := template.New("embedx").Funcs(template.FuncMap{
 		"notEmptyStr": notEmptyStr,
