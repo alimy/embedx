@@ -40,7 +40,7 @@ Just an extension for go:embed.
 package assets
 
 import (
-   "embed"
+    "embed"
     "log"
     "path"
     "text/template"
@@ -68,12 +68,12 @@ func NewConfigFS() embedx.EmbedFS {
 func NewPublicFS() embedx.EmbedFS {
     // change the root to public dir then access files in this returned FS will
     // not need  'public' prefix. eg: access public/index.html just need FS.ReadFile("index.html").
-    return embedx.ChangeRoot(content, "public")
+    return embedx.ChangeRoot(publicFS, "public")
 }
 
 func NewTemplate() *template.Template {
     // change root to templates directory
-    embedFS := embedx.ChangeRoot(content, "templates")
+    embedFS := embedx.ChangeRoot(tmplFS, "templates")
 	
     // register custom namer that return filepath without file name extension.
     embedx.RegisterNamer(embedx.NamerFunc(func (filepath string) string {
